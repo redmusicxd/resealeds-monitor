@@ -21,9 +21,10 @@ import {
   ModalOverlay,
 } from "@chakra-ui/react";
 import { useSession, useSupabaseClient } from "@supabase/auth-helpers-react";
+import { PostgrestResponse } from "@supabase/supabase-js";
 import axios from "axios";
 import { UUID } from "crypto";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, Dispatch, SetStateAction, useState } from "react";
 
 export default function AddModal({
   onOpen,
@@ -34,7 +35,9 @@ export default function AddModal({
 }: {
   onOpen: () => void;
   onClose: () => void;
-  isOpen: boolean;
+    isOpen: boolean;
+    products: IMonitoredProducts[],
+  setProducts: Dispatch<SetStateAction<IMonitoredProducts[]>>
 }) {
 
   const supabase = useSupabaseClient();
@@ -73,8 +76,8 @@ export default function AddModal({
   }
 
   const insertProduct = async () => {
-    const { data } = await supabase.from("monitored_products").insert<IMonitoredProducts>({name: product?.name || "", link: input, img: product?.img || "", price: product?.price || 0, user_id: session?.user.id as UUID, offers: JSON.stringify(product?.offers) || "[]"}).select();
-    setProducts([...products, data])
+    const { data } = await supabase.from("monitored_products").insert<IMonitoredProducts>({name: product?.name || "", link: input, img: product?.img || "", price: product?.price || 0, user_id: session?.user.id as UUID, offers: JSON.stringify(product?.offers) || "[]"}).select() as PostgrestResponse<IMonitoredProducts>;
+    data && setProducts([...products, ...data])
     onClose()
   }
 
