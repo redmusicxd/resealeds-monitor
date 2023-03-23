@@ -19,7 +19,7 @@ interface IMonitoredProducts {
 }
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY!
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
 )
 
 async function updateProduct(item: IMonitoredProducts, new_offer: Record<string, any>) {
