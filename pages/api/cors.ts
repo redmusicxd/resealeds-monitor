@@ -14,12 +14,13 @@ export default async function handler(
   try {
     const url = req.body?.url;
 
-    const {data} = await client.get(url, {
+    const {data, headers} : {data: string, headers: {[k: string]: string[]}} = await client.get(url, {
       headers: {
         "User-Agent": req.headers['user-agent']
       }
-    })
-    res.send(data)
+    }) 
+    res.writeHead(200, {"set-cookie": headers['set-cookie']?.map(a => a.replace(".emag.ro", req.headers.host!.replace(":3000", "")).replace("secure;", ""))}).end(data)
+    // res.send(data)
       // res.write(text);
   } catch (error) {
     console.log(error);
