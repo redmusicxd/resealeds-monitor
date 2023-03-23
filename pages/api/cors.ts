@@ -32,7 +32,7 @@ export default async function handler(
       res.end(html);
     } catch (error) {
       if (!res.headersSent) {
-        res.status(400).send(error.message);
+        res.status(400).send((error as any)?.message);
       }
     } finally {
       if (browser) {
@@ -44,6 +44,6 @@ export default async function handler(
     // res.write(text);
   } catch (error) {
     console.log(error);
-    res.status(500).end(error?.data || "500 Internal Server Error")
+    res.status(500).end((error as any)?.data || "500 Internal Server Error")
   }
 }
