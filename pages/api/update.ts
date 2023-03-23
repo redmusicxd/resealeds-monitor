@@ -34,12 +34,16 @@ export default async function handler(
   const oneHourBefore = new Date();
   oneHourBefore.setMinutes(oneHourBefore.getMinutes() - 60);
   const { data } = (await supabase.from("monitored_products").select("*").lte("updated_at", oneHourBefore.toISOString())) as PostgrestResponse<IMonitoredProducts>
-  
+
   let updatedProducts = 0;
   if (data && data?.length > 0) {
     for await (const item of data!) {
       const parsed = item.offers || []
-      const data_emag = await axios.post("//" + req.headers.host + "/api/cors", { url: item.link });
+      const data_emag = await axios.get(item.link, {
+        headers: {
+          "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36 Edg/111.0.1661.44",
+          
+      }});
       const $ = load(data_emag.data)
       $("head script").each((_i, elem) => {
         let dat = $(elem.children).text();
@@ -49,14 +53,14 @@ export default async function handler(
 
           if (parsed.length != products.offers.length) {
             const new_offer = EM.used_offers.filter((o: { id: any; }) => !parsed.some((l: { id: any; }) => l.id === o.id))
-            
+
             updateProduct(products, new_offer[0])
             updatedProducts++;
           }
         }
-    });
+      });
     }
   }
   res.send(`Updated ${updatedProducts} products`)
-  
+
 }

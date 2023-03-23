@@ -44,7 +44,7 @@ export default function Home() {
     };
 
     fetchProducts();
-  }, [supabase, products]);
+  }, [supabase]);
 
   return (
     <>

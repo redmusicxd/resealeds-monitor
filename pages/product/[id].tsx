@@ -47,15 +47,17 @@ export default function ProductID() {
       link: "",
       img: "",
       price: 0,
-      offers: ""
+      offers: "",
     };
     doc.querySelectorAll("head script").forEach((i) => {
       // console.log(i.innerHTML);
       if (i.innerHTML != "") {
         try {
           let EM = eval(i.innerHTML + "EM");
+          console.log(EM);
+
           data = {
-            ...product,
+            link: val,
             name: EM.product_title,
             price: EM.productDiscountedPrice,
             offers: EM.used_offers,
@@ -82,14 +84,27 @@ export default function ProductID() {
         if (error) {
           console.log("error", error);
         } else {
+          // console.log(prod);
+
           setLoading(true);
-          setProduct(prod[0])
+          setProduct(prod[0]);
           let new_data = await fetchProductInfo(prod[0].link);
-          if (new_data.offers.length != prod[0].offers.length) {
-            setProduct({ ...prod[0], ...new_data });
-            setLoading(false)
-            await supabase.from("monitored_products").update({ offers: new_data.offers, updated_at: new Date() }).eq("id", id);
-          } else setLoading(false)
+          // console.log(new_data);
+
+          if (
+            new_data.offers.length != prod[0].offers.length ||
+            new_data.price != prod[0].price
+          ) {
+            if (new_data.name) {
+              setProduct({ ...prod[0], ...new_data });
+              setLoading(false);
+              const { error } = await supabase
+                .from("monitored_products")
+                .update({ ...new_data,  updated_at: new Date() })
+                .eq("id", prod[0].id);
+              console.log(error);
+            } else setLoading(false);
+          } else setLoading(false);
         }
       }
     };
@@ -99,14 +114,14 @@ export default function ProductID() {
 
   const updateInfo = async () => {
     if (product.link) {
-      setLoading(true)
+      setLoading(true);
       let data = await fetchProductInfo(product.link);
       if (data.offers) {
-        setProduct({...product, ...data})
-        setLoading(false)
+        setProduct({ ...product, ...data });
+        setLoading(false);
       }
     }
-  }
+  };
 
   const deleteEntry = async () => {
     await supabase.from("monitored_products").delete().eq("id", id);
@@ -141,7 +156,8 @@ export default function ProductID() {
                 aria-label="Update"
                 onClick={updateInfo}
                 mr="2"
-              />              <IconButton
+              />{" "}
+              <IconButton
                 icon={<DeleteIcon />}
                 aria-label="Delete"
                 onClick={deleteEntry}
@@ -149,7 +165,8 @@ export default function ProductID() {
             </Flex>
           </CardHeader>
           <CardBody pt="0">
-          {isLoading && <Progress size='xs' isIndeterminate />}
+            {isLoading && <Progress size="xs" isIndeterminate />}
+            {data.length == 0 && <Heading>No Resealeds</Heading>}
             {data.map(
               (
                 item: {
