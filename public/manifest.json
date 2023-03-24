@@ -1,6 +1,6 @@
 {
-  "name": "PWA App",
-  "short_name": "App",
+  "name": "Resealeds Monitor",
+  "short_name": "Resealeds",
   "icons": [
     {
       "src": "/icons/icon-192x192.png",
