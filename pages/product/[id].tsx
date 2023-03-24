@@ -28,7 +28,7 @@ export default function ProductID() {
     name: "",
     link: "",
     img: "",
-    offers: "[]",
+    offers: [],
     price: 0,
   });
   const [isLoading, setLoading] = useState(false);
@@ -38,40 +38,12 @@ export default function ProductID() {
       ? JSON.parse(product?.offers)
       : product?.offers;
   const fetchProductInfo = async (val: string) => {
-    const parser = new DOMParser();
-    const res = await axios.post("/api/cors", { url: val });
-
-    const doc = parser.parseFromString(res.data, "text/html");
-    let data: IMonitoredProducts = {
-      name: "",
-      link: "",
-      img: "",
-      price: 0,
-      offers: "",
-    };
-    doc.querySelectorAll("head script").forEach((i) => {
-      // console.log(i.innerHTML);
-      if (i.innerHTML != "") {
-        try {
-          let EM = eval(i.innerHTML + "EM");
-          console.log(EM);
-
-          data = {
-            link: val,
-            name: EM.product_title,
-            price: EM.productDiscountedPrice,
-            offers: EM.used_offers,
-            img: EM.product_thumb.substring(
-              0,
-              EM.product_thumb.indexOf(new URL(EM.product_thumb).search)
-            ),
-          };
-        } catch (error) {
-          console.error(error);
-        }
-      }
+    setLoading(true);
+    const res = await axios.post("/api/info", {
+      url: val,
     });
-    return data;
+
+    return(res.data)
   };
   useEffect(() => {
     const fetchProducts = async () => {
@@ -84,15 +56,15 @@ export default function ProductID() {
         if (error) {
           console.log("error", error);
         } else {
-          // console.log(prod);
-
           setLoading(true);
           setProduct(prod[0]);
           let new_data = await fetchProductInfo(prod[0].link);
-          // console.log(new_data);
 
           if (
-            new_data.offers.length != prod[0].offers.length ||
+            prod[0].offers.filter(
+              (o: { id: any }) =>
+                !new_data.offers.some((l: { id: any }) => l.id === o.id)
+            ).length > 0 ||
             new_data.price != prod[0].price
           ) {
             if (new_data.name) {
@@ -100,7 +72,7 @@ export default function ProductID() {
               setLoading(false);
               const { error } = await supabase
                 .from("monitored_products")
-                .update({ ...new_data,  updated_at: new Date() })
+                .update({ ...new_data, updated_at: new Date() })
                 .eq("id", prod[0].id);
               console.log(error);
             } else setLoading(false);

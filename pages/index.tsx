@@ -56,72 +56,86 @@ export default function Home() {
         <title>Next.js Example</title>
       </Head>
       <main className={styles.main}>
-          <>
-            <Flex
-              p="6"
-              align="center"
-              justify="center"
-              flexDir={["column", "row"]}
-              gap="2"
-              mt="60px"
+        <>
+          <Flex
+            py="6"
+            align="center"
+            justify="center"
+            flexDir="row"
+            wrap={"wrap"}
+            gap="3"
+            mt="60px"
           >
             {!session && <Text>Please login!</Text>}
-              {products.map((item, i) => (
-                <Link key={i} as={NextLink} href={`/product/${item.id}`}>
-                  <Card
-                    flexDir={["column", "row"]}
-                    bg={colorMode == "dark" ? "gray.700" : "gray.100"}
-                    shadow="md"
+            {products.map((item, i) => (
+              <Link key={i} as={NextLink} href={`/product/${item.id}`}>
+                <Card
+                  flexDir="row"
+                  bg={colorMode == "dark" ? "gray.700" : "gray.100"}
+                  shadow="md"
+                  // maxW="430px"
+                >
+                  <Image
+                    src={item.img}
+                    width={["100px", "150px"]}
+                    height="auto"
+                    objectFit="cover"
+                    alt={item.name}
+                    borderRadius="2xl"
+                    alignSelf="center"
+                    p="2"
+                  />
+                  <Flex
+                    flexDir="column"
+                    borderRightRadius="4"
+                    bg={colorMode == "dark" ? "#454958" : "blackAlpha.100"}
+                    justifyContent="center"
+                    // minW="190px"
+                    maxW="160px"
                   >
-                    <Image
-                      src={item.img}
-                      width="150px"
-                      height="auto"
-                      objectFit="cover"
-                      alt={item.name}
-                      borderLeftRadius="lg"
-                      borderRightRadius={["lg", "none"]}
-                      alignSelf="center"
-                    />
-                    <Flex
-                      flexDir="column"
-                      borderRightRadius="4"
-                      bg={colorMode == "dark" ? "#454958" : "blackAlpha.100"}
-                      justifyContent="center"
-                      maxW="220px"
-                    >
-                      <CardHeader noOfLines={4}>{item.name}</CardHeader>
-                    </Flex>
-                    <Flex
-                      bg={colorMode == "dark" ? "gray.700" : "gray.100"}
-                      px="4"
-                      borderLeftRadius={["6", "none"]}
-                      borderRightRadius="6"
-                      h={["60px", "auto"]}
-                      justifyContent={["center", "normal"]}
-                    >
-                      <Text alignSelf="center">{item.price}</Text>
-                    </Flex>
-                  </Card>
-                </Link>
-              ))}
-            </Flex>
-            {isOpen && (
-                <AddModal isOpen={isOpen} onOpen={onOpen} onClose={onClose} products={products} setProducts={setProducts} />
-            )}
-            <IconButton
-              borderRadius="25"
-              size="lg"
-              pos="fixed"
-              bottom="25px"
-              right="25px"
-              shadow="md"
+                    <CardHeader noOfLines={3} p="0" m="0.8rem">
+                      {item.name}
+                    </CardHeader>
+                  </Flex>
+                  <Flex
+                    bg={colorMode == "dark" ? "gray.700" : "gray.100"}
+                    px="4"
+                    borderLeftRadius={["6", "none"]}
+                    borderRightRadius="6"
+                    h={["60px", "auto"]}
+                    justifyContent={["center", "normal"]}
+                    maxW={["min", "min", "min", "max"]}
+                  >
+                    <Text alignSelf="center" overflowWrap="break-word">
+                      {item.price} Lei
+                    </Text>
+                  </Flex>
+                </Card>
+              </Link>
+            ))}
+          </Flex>
+          {isOpen && (
+            <AddModal
+              isOpen={isOpen}
+              onOpen={onOpen}
+              onClose={onClose}
+              products={products}
+              setProducts={setProducts}
+            />
+          )}
+          <IconButton
+            borderRadius="25"
+            size="lg"
+            pos="fixed"
+            bottom="25px"
+            right="25px"
+            shadow="md"
             onClick={onOpen}
             isDisabled={session ? false : true}
-              icon={<AddIcon />}
-              aria-label="Add button"
-            />
-          </>
+            icon={<AddIcon />}
+            aria-label="Add button"
+          />
+        </>
       </main>
     </>
   );
