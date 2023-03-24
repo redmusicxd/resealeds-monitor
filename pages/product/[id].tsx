@@ -101,9 +101,9 @@ export default function ProductID() {
   };
 
   return (
-    <Box mt="60px" pt="4" display="flex" justifyContent="center">
+    <Box mt="60px" display="flex" justifyContent="center">
       {product.id && (
-        <Card shadow="lg" maxW="520px" mt="5" mb="10" mx="4">
+        <Card shadow="lg" maxW="520px" mt="5" mb="10" mx="4" minW="320px">
           <CardHeader pb="0">
             <Heading>{product?.name}</Heading>
             <Flex>
@@ -138,7 +138,7 @@ export default function ProductID() {
           </CardHeader>
           <CardBody pt="0">
             {isLoading && <Progress size="xs" isIndeterminate />}
-            {data.length == 0 && <Heading>No Resealeds</Heading>}
+            {data.length == 0 && <><Divider my="2"/><Heading>No Resealeds</Heading></>}
             {data.map(
               (
                 item: {

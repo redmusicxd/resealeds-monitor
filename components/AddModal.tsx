@@ -84,6 +84,7 @@ export default function AddModal({
         price: product?.price || 0,
         user_id: session?.user.id as UUID,
         offers: product?.offers || [],
+        updated_at: new Date()
       })
       .select()) as PostgrestResponse<IMonitoredProducts>;
     data && setProducts([...products, ...data]);

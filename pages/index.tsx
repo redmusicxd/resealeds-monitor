@@ -53,31 +53,39 @@ export default function Home() {
           name="viewport"
           content="minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no, user-scalable=no, viewport-fit=cover"
         />
-        <title>Next.js Example</title>
+        <title>Resealeds Monitor</title>
       </Head>
       <main className={styles.main}>
         <>
           <Flex
-            py="6"
+            py="5"
+            px="2"
             align="center"
             justify="center"
             flexDir="row"
             wrap={"wrap"}
             gap="3"
             mt="60px"
+            // w="100%"
           >
             {!session && <Text>Please login!</Text>}
             {products.map((item, i) => (
-              <Link key={i} as={NextLink} href={`/product/${item.id}`}>
+              <Link
+                key={i}
+                as={NextLink}
+                href={`/product/${item.id}`}
+                w={["100%", "auto"]}
+              >
                 <Card
                   flexDir="row"
                   bg={colorMode == "dark" ? "gray.700" : "gray.100"}
                   shadow="md"
-                  // maxW="430px"
+                  // w="100%"
+                  maxW={["auto", "400px", "390px", "450px"]}
                 >
                   <Image
                     src={item.img}
-                    width={["100px", "150px"]}
+                    width={["100px", "110px", "120px", "150px"]}
                     height="auto"
                     objectFit="cover"
                     alt={item.name}
@@ -90,8 +98,9 @@ export default function Home() {
                     borderRightRadius="4"
                     bg={colorMode == "dark" ? "#454958" : "blackAlpha.100"}
                     justifyContent="center"
-                    // minW="190px"
-                    maxW="160px"
+                    minW={["160px", "170px", "180px", "200px"]}
+                    // maxW="280px"
+                    flex="1"
                   >
                     <CardHeader noOfLines={3} p="0" m="0.8rem">
                       {item.name}
@@ -99,12 +108,13 @@ export default function Home() {
                   </Flex>
                   <Flex
                     bg={colorMode == "dark" ? "gray.700" : "gray.100"}
-                    px="4"
+                    px="3"
                     borderLeftRadius={["6", "none"]}
                     borderRightRadius="6"
-                    h={["60px", "auto"]}
                     justifyContent={["center", "normal"]}
-                    maxW={["min", "min", "min", "max"]}
+                    minW={["90px", "90px", "80px", "100px"]}
+                    justify="center"
+                    // maxW={["min", "min", "min", "max"]}
                   >
                     <Text alignSelf="center" overflowWrap="break-word">
                       {item.price} Lei

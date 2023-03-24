@@ -2,6 +2,7 @@ import { SunIcon, MoonIcon } from "@chakra-ui/icons";
 import { Flex, Spacer, IconButton, useColorMode, Text, Avatar, Button, Link, useDisclosure } from "@chakra-ui/react";
 import { useSession } from "@supabase/auth-helpers-react";
 import NextLink from "next/link";
+import { FaHome } from "react-icons/fa";
 import LoginModal from "./LoginModal";
 import ProfileModal from "./Profile";
 
@@ -26,14 +27,14 @@ export default function Layout({ children } : Props) {
         w="100%"
         bg={colorMode == "dark" ? "gray.900" : "gray.50"}
         align="center"
-        pl="4"
+        pl="5"
         flexShrink="0"
         pos="fixed"
         top="0"
         shadow="sm"
         zIndex={999}
       >
-        <Link as={NextLink} href="/">Home</Link>
+        <Link as={NextLink} href="/"><FaHome size="1.2rem"/></Link>
         <Spacer />
         <IconButton
           mr="4"
