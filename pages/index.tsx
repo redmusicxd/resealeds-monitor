@@ -30,6 +30,12 @@ export default function Home() {
   const session = useSession();
   const supabase = useSupabaseClient();
 
+  supabase.auth.onAuthStateChange((ev, session) => {
+    if (ev == 'SIGNED_OUT') {
+      setProducts([])
+    }
+  })
+
   useEffect(() => {
     const fetchProducts = async () => {
       const { data: prod, error } = (await supabase
