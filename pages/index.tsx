@@ -81,7 +81,7 @@ export default function Home() {
                   bg={colorMode == "dark" ? "gray.700" : "gray.100"}
                   shadow="md"
                   // w="100%"
-                  maxW={["auto", "400px", "390px", "450px"]}
+                  maxW={["auto", "400px", "390px", "460px"]}
                 >
                   <Image
                     src={item.img}

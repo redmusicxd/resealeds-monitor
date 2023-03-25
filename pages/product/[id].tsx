@@ -49,7 +49,7 @@ export default function ProductID() {
     let data = {};
     setLoading(true);
     const res = await axios.post(
-      "https://pjtpjlygifiiuwwdboib.functions.supabase.co/cors-proxy",
+      process.env.NEXT_PUBLIC_BROWSERLESS_API || "",
       {
         url: val,
       }
@@ -58,7 +58,7 @@ export default function ProductID() {
     const parser = new DOMParser();
     const doc = parser.parseFromString(res.data, "text/html");
     doc.querySelectorAll("head script").forEach((i) => {
-      console.log(i.innerHTML);
+      // console.log(i.innerHTML);
       if (i.innerHTML != "") {
         try {
           let EM = eval(i.innerHTML + "EM");
@@ -107,7 +107,7 @@ export default function ProductID() {
                 .from("monitored_products")
                 .update({ ...new_data, updated_at: new Date() })
                 .eq("id", prod[0].id);
-              console.log(error);
+              if(error) console.log(error);
             } else setLoading(false);
           } else setLoading(false);
         }

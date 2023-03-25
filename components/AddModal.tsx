@@ -52,7 +52,7 @@ export default function AddModal({
   const isError = !input.startsWith("http") && input != "";
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-    console.log(e.target.value);
+    // console.log(e.target.value);
     setInput(e.target.value);
     setProduct(undefined);
     if (e.target.value.startsWith("http")) {
@@ -72,23 +72,20 @@ export default function AddModal({
       setLoading(false);
     } catch (error) {
       setLoading(true);
-      const res = await axios.post("https://pjtpjlygifiiuwwdboib.functions.supabase.co/cors-proxy", {
+      const res = await axios.post(process.env.NEXT_PUBLIC_BROWSERLESS_API || "", {
         url: val,
       });
 
       const parser = new DOMParser();
       const doc = parser.parseFromString(res.data, "text/html");
       doc.querySelectorAll("head script").forEach(i => {
-        console.log(i.innerHTML);
+        // console.log(i.innerHTML);
         if (i.innerHTML != "") {
           try {
             let EM = eval(i.innerHTML + "EM");
             let img : string = EM.product_thumb;
             setLoading(false)
             setProduct({ name: EM.product_title, price: EM.productDiscountedPrice, img: img.substring(0, img.indexOf(new URL(img).search)), offers: EM.used_offers })
-            // console.log(EM.product_thumb);
-            // console.log(EM.product_title);
-            // console.log(EM.used_offers);
             
           } catch (error) {
             console.error(error);
