@@ -1,30 +1,6 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { createClient } from '@supabase/supabase-js'
 import axios from 'axios';
-
-import { UUID } from "crypto";
-
-interface IMonitoredProducts {
-  id?: number,
-  created_at?: Date,
-  updated_at?: Date,
-  name: string,
-  link: string,
-  user_id: UUID,
-  img: string,
-  price: number,
-  offers: []
-}
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-)
-
-async function updateProduct(item: IMonitoredProducts, new_offer: Record<string, any>) {
-  await supabase.from("monitored_products").update({ offers: item.offers, updated_at: new Date() }).eq("id", item.id);
-  await axios.post(`https://ntfy.kodeeater.xyz/resealed-monitoring-${item.user_id.slice(0, 8)}`, `Resigilat nou eMAG!! \n ${item.name} \n ${new_offer?.description.offer} \n ${new_offer?.price.current} Lei`)
-}
 
 export default async function handler(
   req: NextApiRequest,

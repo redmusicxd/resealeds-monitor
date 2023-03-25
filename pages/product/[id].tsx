@@ -38,12 +38,45 @@ export default function ProductID() {
       ? JSON.parse(product?.offers)
       : product?.offers;
   const fetchProductInfo = async (val: string) => {
-    setLoading(true);
-    const res = await axios.post("/api/info", {
-      url: val,
-    });
+    try {
+      setLoading(true);
+      const res = await axios.post("/api/info", {
+        url: val,
+      });
 
-    return(res.data)
+      return res.data;
+    } catch (error) {
+    let data = {};
+    setLoading(true);
+    const res = await axios.post(
+      "https://pjtpjlygifiiuwwdboib.functions.supabase.co/cors-proxy",
+      {
+        url: val,
+      }
+    );
+
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(res.data, "text/html");
+    doc.querySelectorAll("head script").forEach((i) => {
+      console.log(i.innerHTML);
+      if (i.innerHTML != "") {
+        try {
+          let EM = eval(i.innerHTML + "EM");
+          let img: string = EM.product_thumb;
+          setLoading(false);
+          data = {
+            name: EM.product_title,
+            price: EM.productDiscountedPrice,
+            img: img.substring(0, img.indexOf(new URL(img).search)),
+            offers: EM.used_offers,
+          };
+        } catch (error) {
+          console.error(error);
+        }
+      }
+    });
+    return data;
+    }
   };
   useEffect(() => {
     const fetchProducts = async () => {
@@ -138,7 +171,12 @@ export default function ProductID() {
           </CardHeader>
           <CardBody pt="0">
             {isLoading && <Progress size="xs" isIndeterminate />}
-            {data.length == 0 && <><Divider my="2"/><Heading>No Resealeds</Heading></>}
+            {data.length == 0 && (
+              <>
+                <Divider my="2" />
+                <Heading>No Resealeds</Heading>
+              </>
+            )}
             {data.map(
               (
                 item: {

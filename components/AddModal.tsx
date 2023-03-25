@@ -61,17 +61,41 @@ export default function AddModal({
   };
 
   const fetchProductInfo = async (val: string) => {
-    setLoading(true);
-    const res = await axios.post(
-      "/api/info",
-      {
+    try {
+      setLoading(true);
+      const res = await axios.post("/api/info", {
         url: val,
-      }
-    );
+      });
 
-    setProduct(res.data);
-    
-    setLoading(false)
+      setProduct(res.data);
+
+      setLoading(false);
+    } catch (error) {
+      setLoading(true);
+      const res = await axios.post("https://pjtpjlygifiiuwwdboib.functions.supabase.co/cors-proxy", {
+        url: val,
+      });
+
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(res.data, "text/html");
+      doc.querySelectorAll("head script").forEach(i => {
+        console.log(i.innerHTML);
+        if (i.innerHTML != "") {
+          try {
+            let EM = eval(i.innerHTML + "EM");
+            let img : string = EM.product_thumb;
+            setLoading(false)
+            setProduct({ name: EM.product_title, price: EM.productDiscountedPrice, img: img.substring(0, img.indexOf(new URL(img).search)), offers: EM.used_offers })
+            // console.log(EM.product_thumb);
+            // console.log(EM.product_title);
+            // console.log(EM.used_offers);
+            
+          } catch (error) {
+            console.error(error);
+          }
+        }
+      });
+    }
   };
 
   const insertProduct = async () => {
@@ -84,7 +108,7 @@ export default function AddModal({
         price: product?.price || 0,
         user_id: session?.user.id as UUID,
         offers: product?.offers || [],
-        updated_at: new Date()
+        updated_at: new Date(),
       })
       .select()) as PostgrestResponse<IMonitoredProducts>;
     data && setProducts([...products, ...data]);
