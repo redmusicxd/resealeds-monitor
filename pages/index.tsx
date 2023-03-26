@@ -86,8 +86,8 @@ export default function Home() {
                   flexDir="row"
                   bg={colorMode == "dark" ? "gray.700" : "gray.100"}
                   shadow="md"
-                  // w="100%"
-                  maxW={["auto", "400px", "390px", "460px"]}
+                  minW={["auto", "220px", "320px", "390px"]}
+                  maxW={["auto", "270px", "390px", "auto"]}
                 >
                   <Image
                     src={item.img}
@@ -98,33 +98,27 @@ export default function Home() {
                     borderRadius="2xl"
                     alignSelf="center"
                     p="2"
+                    flex="1"
                   />
                   <Flex
                     flexDir="column"
                     borderRightRadius="4"
-                    bg={colorMode == "dark" ? "#454958" : "blackAlpha.100"}
                     justifyContent="center"
-                    minW={["160px", "170px", "180px", "200px"]}
-                    // maxW="280px"
-                    flex="1"
+                    flex="2.5"
+                    px="2"
+                    pb="2"
+                    align="self-end"
                   >
-                    <CardHeader noOfLines={3} p="0" m="0.8rem">
-                      {item.name}
-                    </CardHeader>
-                  </Flex>
-                  <Flex
-                    bg={colorMode == "dark" ? "gray.700" : "gray.100"}
-                    px="3"
-                    borderLeftRadius={["6", "none"]}
-                    borderRightRadius="6"
-                    justifyContent={["center", "normal"]}
-                    minW={["90px", "90px", "80px", "100px"]}
-                    justify="center"
-                    // maxW={["min", "min", "min", "max"]}
-                  >
-                    <Text alignSelf="center" overflowWrap="break-word">
-                      {item.price} Lei
-                    </Text>
+                    <Flex flex="2" w="100%" borderRadius="md">
+                      <Text noOfLines={3} my="2" alignSelf="center" flex="2" textAlign="center">
+                        {item.name}
+                      </Text>
+                    </Flex>
+                    <Flex bg={colorMode == "dark" ? "gray.700" : "gray.200"} flex="1" w="100%" borderRadius="md" justify="center">
+                      <Text overflowWrap="break-word" py="2" textAlign="center">
+                        {item.price} Lei
+                      </Text>
+                    </Flex>
                   </Flex>
                 </Card>
               </Link>
