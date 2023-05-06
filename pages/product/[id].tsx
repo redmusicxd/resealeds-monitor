@@ -13,6 +13,7 @@ import {
   Progress,
   Spacer,
   Text,
+  useColorModeValue,
 } from "@chakra-ui/react";
 import { useSupabaseClient } from "@supabase/auth-helpers-react";
 import { PostgrestResponse } from "@supabase/supabase-js";
@@ -23,6 +24,7 @@ import { FaSync } from "react-icons/fa";
 
 export default function ProductID() {
   const router = useRouter();
+  const textBackground = useColorModeValue("#757575", "#a0a0a0")
   const { id } = router.query;
   const [product, setProduct] = useState<IMonitoredProducts>({
     name: "",
@@ -93,12 +95,12 @@ export default function ProductID() {
           setProduct(prod[0]);
           let new_data = await fetchProductInfo(prod[0].link);
 
-          if (
-            prod[0].offers.filter(
+          if (new_data.offers &&
+            (prod[0].offers.filter(
               (o: { id: any }) =>
-                !new_data.offers.some((l: { id: any }) => l.id === o.id)
+                !new_data.offers?.some((l: { id: any }) => l.id === o.id)
             ).length > 0 ||
-            new_data.price != prod[0].price
+            new_data.price != prod[0].price || prod[0].offers?.length != new_data.offers?.length)
           ) {
             if (new_data.name) {
               setProduct({ ...prod[0], ...new_data });
@@ -109,7 +111,17 @@ export default function ProductID() {
                 .eq("id", prod[0].id);
               if(error) console.log(error);
             } else setLoading(false);
-          } else setLoading(false);
+          } else if (!new_data.offers) {
+            if (new_data.name) {
+              setProduct({ ...prod[0], ...new_data, offers: [] });
+              setLoading(false);
+              const { error } = await supabase
+                .from("monitored_products")
+                .update({ ...new_data, offers: [], updated_at: new Date() })
+                .eq("id", prod[0].id);
+              if(error) console.log(error);
+            } else setLoading(false);
+          }
         }
       }
     };
@@ -136,10 +148,10 @@ export default function ProductID() {
   return (
     <Box mt="60px" display="flex" justifyContent="center">
       {product.id && (
-        <Card shadow="lg" maxW="520px" mt="5" mb="10" mx="4" minW="320px">
+        <Card shadow="lg" maxW="520px" mt="2" mb="10" mx="4" minW="320px">
           <CardHeader pb="0">
-            <Heading>{product?.name}</Heading>
-            <Flex>
+            <Heading size={["md", "lg"]} mb="2">{product?.name}</Heading>
+            <Flex align="center">
               <Box>
                 <Link
                   href={
@@ -170,11 +182,11 @@ export default function ProductID() {
             </Flex>
           </CardHeader>
           <CardBody pt="0">
-            {isLoading && <Progress size="xs" isIndeterminate />}
             {data.length == 0 && (
               <>
                 <Divider my="2" />
-                <Heading>No Resealeds</Heading>
+                {isLoading && <Progress size="xs" isIndeterminate mt="4"/>}
+                {!isLoading && <Heading size="md" textAlign="center" color={textBackground} pt="2">No Resealeds</Heading>}
               </>
             )}
             {data.map(
@@ -189,13 +201,13 @@ export default function ProductID() {
                 },
                 i: Key | null | undefined
               ) => (
-                <>
+                <div key={i}>
                   <Divider my="2" />
-                  <Flex key={i}>
+                  <Flex key={i} align="center">
                     <Text pr="4">{item.description.offer}</Text>
                     <Text>{item.price.current} Lei</Text>
                   </Flex>
-                </>
+                </div>
               )
             )}
           </CardBody>

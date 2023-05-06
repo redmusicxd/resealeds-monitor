@@ -1,39 +1,17 @@
-import { IMonitoredProducts } from "@/lib/database";
 import {
   Avatar,
-  Box,
   Button,
-  Card,
-  CardBody,
-  CardHeader,
-  CircularProgress,
   Flex,
-  FormControl,
-  FormErrorMessage,
-  FormHelperText,
-  FormLabel,
-  Grid,
-  GridItem,
   Heading,
-  Icon,
-  IconButton,
-  Image,
-  Input,
-  Link,
   Modal,
   ModalBody,
   ModalCloseButton,
   ModalContent,
-  ModalFooter,
   ModalHeader,
   ModalOverlay,
   Text,
 } from "@chakra-ui/react";
 import { useSession, useSupabaseClient } from "@supabase/auth-helpers-react";
-import { FaUserCircle } from "react-icons/fa";
-import { MdArrowBack } from "react-icons/md";
-import NextLink from "next/link";
-import { useRouter } from "next/router";
 
 export default function ProfileModal({
   onOpen,
@@ -60,7 +38,7 @@ export default function ProfileModal({
           <Text>Your profile</Text>
         </ModalHeader>
         <ModalCloseButton />
-        <ModalBody>
+        <ModalBody pt="0">
           {(session?.user && (
             <>
               <Flex align="center">

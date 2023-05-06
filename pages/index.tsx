@@ -11,6 +11,7 @@ import {
   IconButton,
   useDisclosure,
   Box,
+  Heading,
 } from "@chakra-ui/react";
 import { AddIcon } from "@chakra-ui/icons";
 import NextLink from "next/link";
@@ -31,10 +32,10 @@ export default function Home() {
   const supabase = useSupabaseClient();
 
   supabase.auth.onAuthStateChange((ev, session) => {
-    if (ev == 'SIGNED_OUT') {
-      setProducts([])
+    if (ev == "SIGNED_OUT") {
+      setProducts([]);
     }
-  })
+  });
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -64,7 +65,6 @@ export default function Home() {
       <main className={styles.main}>
         <>
           <Flex
-            py="5"
             px="2"
             align="center"
             justify="center"
@@ -72,56 +72,75 @@ export default function Home() {
             wrap={"wrap"}
             gap="3"
             mt="60px"
-            // w="100%"
+            flex="1"
+            alignContent={["flex-start", "center"]}
+            pt="2"
+            pb="5"
           >
             {!session && <Text>Please login!</Text>}
+            {products.length == 0 && session && (
+              <Flex h="full" flex="1" align="center" justify="center">
+                <Heading textColor="#888888">No products added!</Heading>
+              </Flex>
+            )}
             {products.map((item, i) => (
-              <Link
+              <Card
                 key={i}
-                as={NextLink}
-                href={`/product/${item.id}`}
-                w={["100%", "auto"]}
+                flexDir="row"
+                bg={colorMode == "dark" ? "gray.700" : "gray.100"}
+                shadow="md"
+                minW={["auto", "220px", "320px", "390px"]}
+                maxW={["auto", "270px", "390px", "auto"]}
               >
-                <Card
-                  flexDir="row"
-                  bg={colorMode == "dark" ? "gray.700" : "gray.100"}
-                  shadow="md"
-                  minW={["auto", "220px", "320px", "390px"]}
-                  maxW={["auto", "270px", "390px", "auto"]}
+                <Image
+                  src={item.img}
+                  width={["100px", "110px", "120px", "150px"]}
+                  height="auto"
+                  objectFit="cover"
+                  alt={item.name}
+                  borderRadius="2xl"
+                  alignSelf="center"
+                  p="2"
+                  flex="1"
+                />
+                <Flex
+                  flexDir="column"
+                  borderRightRadius="4"
+                  justifyContent="center"
+                  flex="2.5"
+                  px="2"
+                  pb="2"
+                  align="self-end"
                 >
-                  <Image
-                    src={item.img}
-                    width={["100px", "110px", "120px", "150px"]}
-                    height="auto"
-                    objectFit="cover"
-                    alt={item.name}
-                    borderRadius="2xl"
-                    alignSelf="center"
-                    p="2"
-                    flex="1"
-                  />
-                  <Flex
-                    flexDir="column"
-                    borderRightRadius="4"
-                    justifyContent="center"
-                    flex="2.5"
-                    px="2"
-                    pb="2"
-                    align="self-end"
+                  <Link
+                    as={NextLink}
+                    href={`/product/${item.id}`}
                   >
                     <Flex flex="2" w="100%" borderRadius="md">
-                      <Text noOfLines={3} my="2" alignSelf="center" flex="2" textAlign="center">
+                      <Text
+                        noOfLines={3}
+                        my="2"
+                        alignSelf="center"
+                        flex="2"
+                        textAlign="center"
+                      >
                         {item.name}
                       </Text>
                     </Flex>
-                    <Flex bg={colorMode == "dark" ? "gray.700" : "gray.200"} flex="1" w="100%" borderRadius="md" justify="center">
-                      <Text overflowWrap="break-word" py="2" textAlign="center">
-                        {item.price} Lei
-                      </Text>
-                    </Flex>
+                  </Link>
+                  <Flex
+                    bg={colorMode == "dark" ? "gray.700" : "gray.200"}
+                    flex="1"
+                    w="100%"
+                    borderRadius="md"
+                    justify="center"
+                  >
+                    <Text overflowWrap="break-word" py="2" textAlign="center">
+                      {item.price} Lei
+                    </Text>
                   </Flex>
-                </Card>
-              </Link>
+                </Flex>
+              </Card>
             ))}
           </Flex>
           {isOpen && (
@@ -140,6 +159,7 @@ export default function Home() {
             bottom="25px"
             right="25px"
             shadow="md"
+            colorScheme="green"
             onClick={onOpen}
             isDisabled={session ? false : true}
             icon={<AddIcon />}

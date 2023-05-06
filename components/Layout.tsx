@@ -2,7 +2,7 @@ import { SunIcon, MoonIcon } from "@chakra-ui/icons";
 import { Flex, Spacer, IconButton, useColorMode, Text, Avatar, Button, Link, useDisclosure } from "@chakra-ui/react";
 import { useSession } from "@supabase/auth-helpers-react";
 import NextLink from "next/link";
-import { FaHome } from "react-icons/fa";
+import { AiFillHome } from "react-icons/ai";
 import LoginModal from "./LoginModal";
 import ProfileModal from "./Profile";
 
@@ -25,24 +25,25 @@ export default function Layout({ children } : Props) {
       <Flex
         h="60px"
         w="100%"
-        bg={colorMode == "dark" ? "gray.900" : "gray.50"}
+        bg={colorMode == "dark" ? "gray.800" : "white"}
         align="center"
-        pl="5"
+        px="5"
         flexShrink="0"
         pos="fixed"
         top="0"
-        shadow="sm"
+        // shadow="sm"
         zIndex={999}
       >
-        <Link as={NextLink} href="/"><FaHome size="1.2rem"/></Link>
+        <Link as={NextLink} href="/"><AiFillHome size="1.5rem"/></Link>
         <Spacer />
         <IconButton
           mr="4"
+          variant="ghost"
           onClick={() => setColorMode(colorMode == "dark" ? "light" : "dark")}
           icon={colorMode == "dark" ? <SunIcon /> : <MoonIcon />}
           aria-label="Color Mode toggle button"
         />
-        {session ? (<Avatar mr="2" name={session.user.user_metadata.name} src={session?.user.user_metadata.avatar_url} size="md" onClick={onOpen} _hover={{cursor: "pointer"}} />) : <Button mr="2" onClick={onOpenLogin}>Login</Button>}
+        {session ? (<Avatar name={session.user.user_metadata.name} src={session?.user.user_metadata.avatar_url} size="sm" onClick={onOpen} _hover={{cursor: "pointer"}} />) : <Button mr="2" onClick={onOpenLogin}>Login</Button>}
         {isOpen && <ProfileModal isOpen={isOpen} onOpen={onOpen} onClose={onClose} />}
         {isLogin && <LoginModal isOpen={isLogin} onOpen={onOpenLogin} onClose={onCloseLogin} />}
       </Flex>
